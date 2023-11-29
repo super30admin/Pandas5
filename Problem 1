@@ -1,0 +1,12 @@
+# Department Highest Salary
+
+import pandas as pd
+
+def department_highest_salary(employee: pd.DataFrame, department: pd.DataFrame) -> pd.DataFrame:
+    
+    merged_df = pd.merge(employee, department, left_on='departmentId', right_on='id', how='inner')
+    merged_df = merged_df.rename(columns={'name_y': 'Department', 'name_x': 'Employee', 'salary': 'Salary'})
+    selected_df = merged_df[['Department', 'Employee', 'Salary']]
+    grouped_df = selected_df.groupby(['Department', 'Employee']).agg({'Salary': 'max'}).reset_index()
+    highest_salary_df = grouped_df.groupby('Department', group_keys=False).apply(lambda group: group[group['Salary'] == group['Salary'].max()])
+    return highest_salary_df
